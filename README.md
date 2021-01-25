@@ -22,4 +22,5 @@ all the way learning the book "算法竞赛入门经典" 2nd
   > KISS keep it simple and stupid
   >
   > 竟然刚开始忘记了怎么引入库文件。。。。#include <stdio.h>
-
+  >
+  > 判定三角形的方法简单到可以用确定的两边来算，大于差小于和
