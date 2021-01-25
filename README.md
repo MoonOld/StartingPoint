@@ -18,3 +18,5 @@ all the way learning the book "算法竞赛入门经典" 2nd
 * 小问题
 
   > M_PI不是ANSI_C所定义，可用acos(-1.0)计算pi
+  >
+  > KISS keep it simple and stupid
