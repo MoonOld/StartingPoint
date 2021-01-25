@@ -20,7 +20,5 @@ int main(){
     a -= b;
     printf("%d %d\n",a,b);
     #endif
-        #ifdef way
-    #endif
     return 0;
 }
