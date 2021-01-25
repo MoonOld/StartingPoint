@@ -1,4 +1,4 @@
-#include stdio.h
+#include <stdio.h>
 #define Zero
 int main(){
     int a,b;

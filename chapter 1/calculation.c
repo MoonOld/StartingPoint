@@ -1,7 +1,7 @@
 //exp1~4
 #define exp1
-#include stdio.h
-#include math.h
+#include <stdio.h>
+#include <math.h>
 int main(){
     printf("%f",
 #ifdef exp1

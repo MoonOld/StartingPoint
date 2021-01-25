@@ -1,4 +1,4 @@
-#include stdio.h
+#include <stdio.h>
 #define way1
 int main(){
     int a,b,c;
