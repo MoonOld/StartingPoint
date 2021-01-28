@@ -1,4 +1,4 @@
-#define asg8
+#define asg9
 #define eg3_2_way1
 #include <stdio.h>
 #include <string.h>
@@ -849,4 +849,7 @@ int main(){
     printf("Repeating length:%lu\n",strlen(decimal)-start);
     return 0;
 }
+#endif
+
+#ifdef asg9
 #endif
