@@ -1,8 +1,9 @@
-#define asg9
-#define eg3_2_way1
+#define asg12
+#define asg12_way_excellent
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #ifdef eg3_1
 /* output in reverse order*/
@@ -852,4 +853,187 @@ int main(){
 #endif
 
 #ifdef asg9
+/* All in all */
+int main(){
+    char s[50],t[50];
+    int k,flag;
+    scanf("%s %s",s,t);
+    for(int i = 0; s[i];i++){
+        if(s[i]==t[0]){
+            //process;
+            k = 1;
+            flag = 1;
+            for(int j=1;t[j];j++){
+                for(;s[i+k];k++){
+                    if(t[j]==s[i+k])
+                        break;
+                    else if(s[i+k+1]==0)flag=0;
+                }
+                if(!flag)break;
+            }
+        }
+    }
+    if(flag)printf("Yes\n");
+    else printf("No\n");
+}
+#endif
+
+#ifdef asg10
+/* Box */
+enum{
+    No,Yes,BufNeedPair1,BufNeedPair2,BufNeedPair3
+};
+int main(){
+    int wi[6],hi[6],num[3],flag=Yes,buf=0;
+    memset(num,0,sizeof(num));
+    for(int i =0;i<6;i++){
+        scanf("%d %d",wi+i,hi+i);
+    }//read
+    num[0]= 3;
+    num[1]= 3;
+    for(int i=1;i<6;i++) {
+        if(wi[i]==wi[0]&&hi[i]==hi[0] || wi[i]==hi[0]&&hi[i]==wi[0]){
+            num[0]--;
+            num[1]--;
+        }
+        else {
+            if(wi[i]==wi[0]||wi[i]==hi[0]){
+                if(hi[i]==buf){
+                    flag--;
+                }
+                else if(flag==Yes){
+                    flag = BufNeedPair3;
+                    buf = hi[i];
+                }
+                else {
+                    flag = No;
+                }
+
+                if(wi[i]==wi[0]&&num[0])num[0]--;
+                else if(wi[i]==hi[0])num[1]--;
+            }
+            else if(hi[i]==wi[0] || hi[i]==hi[0]){
+                if(wi[i]==buf&&flag>=BufNeedPair1){
+                    flag--;
+                }
+                else if(flag==Yes){
+                    flag = BufNeedPair3;
+                    buf = wi[i];
+                }
+                else {
+                    flag = No;
+                }
+                if(hi[i]==wi[0]&&num[0])num[0]--;
+                else if(hi[i]==hi[0])num[1]--;
+            }
+            else flag=No;
+        }
+        if(flag==No){
+            break;
+        }
+    }
+    printf("%d %d %d\n",num[0],num[1],flag);
+    if( num[0]<1&&num[1]<1&&flag==Yes){
+            printf("yes\n");
+        }
+    else printf("no\n");
+
+    return 0;
+}
+#endif
+
+#ifdef asg11
+/* Kickdown */
+int main(){
+    char bottom[205],teeth[105];
+    int limit='1'+'2',length,flag,i;
+    memset(bottom,0,sizeof(bottom));
+    scanf("%s %s",bottom,teeth);
+    length= strlen(teeth);
+    for(i = 0;bottom[i];i++){
+        flag = 1;
+        for(int j=0;teeth[j];j++){
+            if(teeth[j]+bottom[i+j]>limit)flag=0;
+        }
+        if(flag)break;
+    }
+    if(bottom[i+length-1])
+        printf("%lu\n",strlen(bottom));
+    else printf("%d\n",i+length);
+    return 0;
+}
+#endif
+
+#ifdef asg12
+/* Floating-Point Numbers */
+enum{
+    Done,AllDone
+};
+typedef struct ab{
+    char whole;
+    unsigned long long decimal;
+    unsigned char exp;
+}AB;
+
+int main(){
+#ifdef asg12_way_suck
+    char cardinal[20],exponent[10],buf,*p;
+    p = cardinal;
+    memset(cardinal,0,sizeof(cardinal));
+    memset(exponent,0,sizeof(exponent));
+    while((buf=getchar())!='e'){
+        *p++=buf;
+    }
+    p = exponent;
+    while((buf=getchar())!='\n'){
+        *p++=buf;
+    }//read;
+    //get E by doing division
+
+    //get M by transfer to binary
+#endif
+#ifdef asg12_way_excellent
+    AB table[10][30];
+    for(int i =0;i<10;i++){
+        for(int j = 1;j<31;j++){
+            table[i][j] = (int)
+        }
+    }
+#endif
+
+    return 0;
+}
+
+int mul(char *dst,char* exp){
+    int i=0,flag=Done;
+
+    while(*(++i+exp));//find '\0'
+    i--;
+    while(*(i+exp)=='0'){
+        *(i+exp) = '9';
+        if(i==0){
+            flag=AllDone;
+            break;
+        }
+        i--;
+
+    }
+    *(i+exp) -=1;
+
+    while(*(dst++ )!='.');
+    *(dst-1) = *dst;
+    *dst = '.';
+    return flag;
+}
+
+int div(char *dst,char* exp){
+
+}
+int carry(int carried,int place,char* p){
+
+    return 0;
+}
+
+int createtable
+
 #endif
