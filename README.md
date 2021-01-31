@@ -97,4 +97,3 @@ all the way learning the book "算法竞赛入门经典" 2nd
 * 还是开始第四单元吧。
 * linux中栈大小并未存储在程序中，而windows不同 gcc可以指定程序
 * 较大数组（即使是main内）可能爆栈
-* 
