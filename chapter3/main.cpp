@@ -969,10 +969,10 @@ int main(){
 enum{
     Done,AllDone
 };
+#define COMPARE 1e-12
 typedef struct ab{
-    char whole;
-    unsigned long long decimal;
-    unsigned char exp;
+    double decimal;
+    int exp;
 }AB;
 
 int main(){
@@ -993,14 +993,39 @@ int main(){
     //get M by transfer to binary
 #endif
 #ifdef asg12_way_excellent
-    AB table[10][30];
+    AB table[10][31];
+    double m=0,buf=1,dec;
+    unsigned long E,exponent;
+    char s[50];
     for(int i =0;i<10;i++){
+        buf /= 2;
+        m  += buf;
+        E=0;
         for(int j = 1;j<31;j++){
-            table[i][j] = (int)
+            E = 2*E +1;
+            table[i][j].exp = (int)(log10(m)+ E*log10(2) );
+            table[i][j].decimal= pow(10,log10(m)+ E*log10(2)-table[i][j].exp);
+
         }
     }
 #endif
-
+    scanf("%s",s);
+    if(strcmp(s,"0e0")==0){
+        return 0;
+    }
+    for(int i =0;i<strlen(s);i++)
+        if(s[i]=='e'){
+            s[i]=' ';
+            break;
+        }
+    sscanf(s,"%lf %lu",&dec,&exponent);
+    for(int i = 0;i<10;i++)
+        for(int j = 1;j<31;j++){
+            if(table[i][j].exp==exponent&& table[i][j].decimal-dec<COMPARE&&table[i][j].decimal-dec> -COMPARE){
+                printf("%d %d\n",i,j);
+                break;
+            }
+        }
     return 0;
 }
 
@@ -1034,6 +1059,5 @@ int carry(int carried,int place,char* p){
     return 0;
 }
 
-int createtable
 
 #endif
