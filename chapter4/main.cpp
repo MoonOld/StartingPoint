@@ -1,4 +1,4 @@
-#define UVa12412
+#define UVa1589
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -583,6 +583,229 @@ int main(){
         scanf("%d",&input);
         if(input)p[input-1]();
     }while(input);
+    return 0;
+}
+#endif
+
+#ifdef UVa1589
+/* xiangqi */
+enum{
+    G,R,H,C
+};
+enum{
+    no,UL1,UL2,UR1,UR2,DR2,DR1,DL2,DL1
+};
+
+typedef struct{
+    int r;
+    int c;
+    int type;
+}piece;
+//black -> r as a sign of judging whether this place is banned
+
+int is_blackvalid(piece* black) {
+    if(!
+    ((black->c )<=6 && (black->r )<=3&&
+       (black->c )>=4 && (black->r )>=1 )
+       )black->r=0;
+    return 0;
+}
+int getblackroutes(piece* black,piece*dst){
+    //get all the place where black could go
+    int buf=1;
+    for(int i =0;i<2;i++){
+        buf=-buf;
+        dst->r =black->r +buf;
+        dst->c = black->c;
+        is_blackvalid(dst);
+        dst++;
+    }
+    for(int i =0;i<2;i++){
+        buf=-buf;
+        dst->c =black->c +buf;
+        dst->r = black->r ;
+        is_blackvalid(dst);
+        dst++;
+    }
+    return 0;
+}
+int is_reachable_horse(piece* black,piece *horse){
+    int flag=no;
+    if(black->r > horse->r &&(black->r-2<=horse->r)){
+        //the up situation
+        if(black->r ==horse->r+1) {
+            if (black->c == horse->c - 2)
+                flag = UL1;
+            else if (black->c == horse->c + 2)
+                flag = UR2;
+        }
+        else {
+            if (black->c == horse->c - 1)
+                flag = UL2;
+            else if (black->c == horse->c + 1)
+                flag = UR1;
+        }
+    }
+    else if(black->r < horse->r && (black->r+2 >= horse->r)){
+        //the down situation
+        if(black->r ==horse->r-1) {
+            if (black->c == horse->c - 2)
+                flag = DL1;
+            else if (black->c == horse->c + 2)
+                flag = DR2;
+        }
+        else {
+            if (black->c == horse->c - 1)
+                flag = DL2;
+            else if (black->c == horse->c + 1)
+                flag = DR1;
+        }
+    }
+    return flag;
+}
+
+int judgeR(piece* black, piece *car,piece* red){
+    int flag;
+    piece* redbuf;
+    for(int i = 0;i<4;i++){
+        if(black->r&&(black->c == car-> c||black->r == car-> r)){
+            flag=1;
+            redbuf=red;
+            if(black->r==car->r){
+                while(redbuf->r){
+                    if(redbuf->r == car->r&&
+                    redbuf->c <  (black->c > car->c? black->c : car->c )&&
+                    redbuf->c >  (black->c < car->c? black->c : car->c))flag =0;
+                    red++;
+                }
+            }
+            else if(black->c == car-> c){
+                while(redbuf->r){
+                if(redbuf->c == car->c&&
+                   redbuf->r <  (black->r > car->r? black->r : car->r )&&
+                   redbuf->r >  (black->r < car->r? black->r : car->r))flag =0;
+                redbuf++;
+            }
+        }
+        if(flag)black->r=0;
+        }
+        black++;
+    }
+    return 0;
+}
+int judgeC(piece * black,piece *cannon,piece* red ){
+    int flag;
+    //flag record the chess piece among cannon and black boss
+    piece * redbuf;
+    for(int i =0;i<4;i++){
+        if(black->r&&(black->r==cannon->r||black->c==cannon->c)){
+            redbuf = red;
+            flag = 0;
+            if(black->r==cannon->r){
+                while(redbuf->r){
+                    if(redbuf->r == cannon->r&&
+                       redbuf->c <  (black->c > cannon->c? black->c : cannon->c )&&
+                       redbuf->c >  (black->c < cannon->c? black->c : cannon->c))flag +=1;
+                    redbuf++;
+                }
+            }
+            else while(redbuf->r){
+                if(redbuf->c == cannon->c&&
+                      redbuf->r <  (black->r > cannon->r? black->r : cannon->r )&&
+                      redbuf->r >  (black->r < cannon->r? black->r : cannon->r))flag +=0;
+            }
+            if(flag==1)black->r=0;
+        }
+        black++;
+    }
+    return 0;
+}
+int judgeG(piece * black,piece *boss,piece * red){
+    int flag;
+    piece * redbuf;
+    for(int i = 0;i<4;i++) {
+        if(black->r&&black->c == boss->c){
+            flag=1;
+            redbuf = red;
+            while(redbuf->r){
+                if(redbuf ->c==boss->c && redbuf->r > boss->r && redbuf->r < black->r)flag=0;
+                redbuf++;
+            }
+            if(flag)black->r=0;
+        }
+        black++;
+    }
+        return 0;
+}
+int judgeH(piece * black,piece *horse,piece* red){
+    int flag,buf,rbuf,cbuf;
+    piece* redbuf;
+    for(int i =0;i<4;i++){
+        if(black->r){
+            buf = is_reachable_horse(black,horse);
+            if(buf){
+                if(buf<=UR1&&buf>=UL2){
+                    rbuf=-1;
+                    cbuf=0;
+                    if(buf==UL2)cbuf=-1;
+                }
+                else if(buf>=UR2&&buf<=DR2){
+                    rbuf=0;
+                    cbuf=1;
+                }
+                else if (buf>= DR1&&buf <=DL1){
+                    rbuf=1;
+                    cbuf=0;
+                }
+                else {
+                    rbuf=0;
+                    cbuf=-1;
+                }
+                redbuf=red;
+                flag=1;
+                while(redbuf->r){
+                    if(redbuf->r==horse->r+rbuf&&redbuf->c==horse->c+cbuf)flag=0;
+                    redbuf++;
+                }
+                if(flag)black->r=0;
+            }
+        }
+        black++;
+    }
+    return 0;
+}
+int judgeEmpty(piece*black){
+    for(int i=0;i<4;i++){
+        if(black->r)return 0;
+        black++;
+    }
+    return 1;
+}
+
+int main(){
+    int n,rbuf,cbuf,(*p[5])(piece* ,piece* ,piece*)={judgeG,judgeR,judgeH,judgeC};
+    char typebuf;
+    piece black[4],red[7],original;
+    memset(black,0,sizeof(black));
+    memset(red,0,sizeof(red));
+    scanf("%d %d %d",&n,&original.r,&original.c);
+    for(int i =0;i<7;i++){
+        getchar();
+        scanf("%c %d %d",&typebuf,&rbuf,&cbuf);
+        if(typebuf=='0')break;
+        red[i].c=cbuf;
+        red[i].r=rbuf;
+        if(typebuf=='G')red[i].type=G;
+        else if(typebuf=='R')red[i].type=R;
+        else if(typebuf=='H')red[i].type=H;
+        else if(typebuf=='C')red[i].type=C;
+    }
+    getblackroutes(&original,black);
+    for(int i =0;i<7;i++){
+        p[red[i].type](black,red+i,red);
+    }
+    if(judgeEmpty(black))printf("Yes\n");
+    else printf("No\n");
     return 0;
 }
 #endif
