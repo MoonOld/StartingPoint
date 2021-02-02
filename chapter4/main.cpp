@@ -1,4 +1,4 @@
-#define UVa512
+#define UVa12412
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -287,7 +287,6 @@ int findnum(int *dst,int target,int flag){
     }
     return buffer;
 }
-
 int Exg(int *dst,int *r,int *c){
     for(int i = 0;i<2;i++){
         if(dst[2*i]==*r && dst[2*i+1]== *c){
@@ -298,7 +297,6 @@ int Exg(int *dst,int *r,int *c){
     }
     return 0;
 }
-
 int readcommand(char* dst){
     scanf("%s",dst);
     if( strcmp(dst,"EX") )
@@ -309,7 +307,6 @@ int readparameters(int * dst,int n){
     while(n--)scanf("%d",dst++);
     return 0 ;
 }
-
 int work(char *command,int *para,int*r,int*c){
     int i,buf;
     for(i =0;i<5;i++){
@@ -347,7 +344,6 @@ int work(char *command,int *para,int*r,int*c){
     }
     return 1;
 }
-
 #endif
 int main(){
 #ifdef UVa512_way1
@@ -384,6 +380,209 @@ int main(){
 
 
 
+    return 0;
+}
+#endif
+
+#ifdef UVa12412
+/* A typical homework */
+typedef struct{
+    char SID[11];
+    char CID[3];
+    char name[12];
+    short Chinese;
+    short Mathematics;
+    short English;
+    short Progamming;
+}STUDENT;
+
+STUDENT student[500];
+int currentlast=0;
+int search(char* buf,int i){
+    for(;i<currentlast;i++){
+        if(strcmp(buf,student[i].SID)==0)
+            return i;
+    }
+    return -1;
+}
+
+int gettotal(int j){
+    int total=0;
+    total+=student[j].Mathematics;
+    total+=student[j].English;
+    total+=student[j].Progamming;
+    total+=student[j].Chinese;
+    return total;
+}
+int rank(int torank){
+    int num=1,total;
+    for(int j=0;j<currentlast;j++){
+        if(student[j].SID[0]){
+            total=gettotal(j);
+            if(total>torank)num++;
+        }
+    }
+    return num;
+}
+
+int Add(){
+    char buf[12];
+    printf("Please enter the SID, CID, name, and four scores. Enter 0 to Finish.\n");
+    while(1) {
+        scanf("%s", buf);
+        if (strcmp(buf,"0")!=0) {
+            if (search(buf,0)==-1) {
+                strcpy(student[currentlast].SID,buf);
+                scanf("%s %s %hd %hd %hd %hd", student[currentlast].CID, student[currentlast].name,
+                      &student[currentlast].Chinese, &student[currentlast].Mathematics,
+                      &student[currentlast].English, &student[currentlast].Progamming);
+                currentlast++;
+            }
+            else {
+                printf("Duplicated SID\n");
+                scanf("%*s %*s %*hd %*hd %*hd %*hd");
+            }
+        }
+        else break;
+    }
+    return 0;
+}
+int Remove(){
+    unsigned long long bufi,base,find;
+    int num=0;
+    char bufc[13];
+    printf("Please enter SID or name. Enter 0 to finish.\n");
+    while(1) {
+        scanf("%s", bufc);
+        if (bufc[0] >= '0' && bufc[0] <= '9') {
+            if(bufc[1]==0)break;
+            while (~(find = search(bufc,0))) {
+                num++;
+                student[find].SID[0] = 0;
+            }
+        }
+        else {
+            for(int i =0;i<currentlast;i++){
+                if(student[i].SID[0]&& strcmp(student[i].CID,bufc)==0){
+                    num++;
+                    student[find].SID[0]=0;
+                }
+            }
+        }
+    }
+    printf("%d student(s) were removed\n",num);
+    return 0;
+}
+
+int Query(){
+    int find=-1;
+    char bufc[13];
+    int total;
+    printf("Please enter SID or name. Enter 0 to finish.\n");
+    while(1) {
+        scanf("%s",bufc);
+        if (!(bufc[0] >= '0' && bufc[0] <= '9')) {
+            for (int i = 0; i < currentlast; i++) {
+                if (strcmp(student[i].name, bufc) == 0) {
+                    total=gettotal(i);
+                    printf("%d %s %s %s %hd %hd %hd %hd %d %.2f\n",rank(total),student[i].SID, student[i].CID,
+                           student[i].name, student[i].Chinese,student[i].Mathematics,student[i].English,student[i].Progamming,total,
+                           total/4.0);
+                }
+            }
+        } else {
+            if (strcmp(bufc,"0")==0)
+                break;                           //end input and exit like this  "0\n"
+            while ((find = search(bufc,find+1))!=-1) {
+                total=gettotal(find);
+                printf("%d %s %s %s %hd %hd %hd %hd %d %.2f\n",rank(total),student[find].SID, student[find].CID,
+                       student[find].name, student[find].Chinese,student[find].Mathematics,student[find].English,student[find].Progamming,total,
+                       total/4.0);
+            }
+        }
+    }
+    return 0;
+}
+
+int ShowRanking(){
+    printf("Showing the ranklist hurts the students' self-esteem. Don't do that.\n");
+    return 0;
+}
+int ShowStatistics(){
+    char Class[3];
+    int failed,flag=0,all=0;
+    int statistics[13];//0~3 for subject total, 4~8 for failed man,9~12 for subject failed
+    printf("Please enter class ID, 0 for the whole statistics.\n");
+    scanf("%s",Class);
+    memset(statistics,0,sizeof(statistics));
+    if(strcmp(Class,"0")==0)flag=1;
+    for(int i = 0;i<currentlast;i++){
+        if(student[i].SID[0] && (flag||strcmp(student[i].CID,Class)==0)){
+            failed=0;
+            all++;
+            statistics[0]+=student[i].Chinese;
+            statistics[1]+=student[i].Mathematics;
+            statistics[2]+=student[i].English;
+            statistics[3]+=student[i].Progamming;
+            if(student[i].Chinese<60){
+                failed++;
+                statistics[9]++;
+            }
+            if(student[i].Mathematics<60){
+                failed++;
+                statistics[10]++;
+            }
+            if(student[i].English<60){
+                statistics[11]++;
+                failed++;
+            }
+            if(student[i].Progamming<60){
+                failed++;
+                statistics[12]++;
+            }
+            statistics[4+failed]++;
+        }
+    }
+    printf("Chinese\n"
+           "Average Score: %.2f\n"
+           "Number of passed students: %d \nNumber of failed students: %d\n\n", statistics[0]/(float)all,
+           all-statistics[9],statistics[9]);
+    printf("Mathematics\n"
+           "Average Score: %.2f\n"
+           "Number of passed students: %d \nNumber of failed students: %d\n\n", statistics[1]/(float)all,
+           all-statistics[10],statistics[10]);
+    printf("English\n"
+           "Average Score: %.2f\n"
+           "Number of passed students: %d \nNumber of failed students: %d\n\n", statistics[2]/(float)all,
+           all-statistics[11],statistics[11]);
+    printf("Programming\n"
+           "Average Score: %.2f\n"
+           "Number of passed students: %d \nNumber of failed students: %d\n\n",statistics[3]/(float)all,
+           all-statistics[12],statistics[12]);
+    printf("Overall:\n"
+           "Number of students who passed all subjects: %d\n"
+           "Number of students who passed 3 or more subjects: %d\n"
+           " Number of students who passed 2 or more subjects: %d\n"
+           " Number of students who passed 1 or more subjects: %d\n"
+           " Number of students who failed all subjects: %d\n",statistics[4],statistics[5],
+           statistics[6],statistics[7],statistics[8]);
+    return 0;
+}
+
+int main(){
+    int (*p[5])()={Add,Remove,Query,ShowRanking,ShowStatistics},input;
+    do{
+        printf("Welcome to Student Performance Management System (SPMS)\n");
+        printf("\n");
+        printf("1 - Add\n");
+        printf("2 - Remove\n");
+        printf("3 - Query\n");
+        printf("4 - Show ranking\n");
+        printf("5 - Show statistics\n");
+        printf("0 - Exit\n");
+        scanf("%d",&input);
+        if(input)p[input-1]();
+    }while(input);
     return 0;
 }
 #endif
