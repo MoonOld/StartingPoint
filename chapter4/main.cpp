@@ -1,4 +1,4 @@
-#define UVa220
+#define UVa253
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -940,7 +940,7 @@ int main(){
 #ifdef UVa220
 /* Othello */
 enum{
-    listfunction ,movefunction
+    listfunction ,movefunction,exitfunction
 };
 char board[9][9];
 int readboard(){
@@ -1051,8 +1051,12 @@ int move(char * side){
     else *side ='B';
     return 0;
 }
+int exit(char * side){
+    for(int i =0;i<8;i++)printf("%s\n",board[i]);
+    return 0;
+}
 int main(){
-    int flag,n,(*p[2])(char* )={list,move};
+    int flag,n,(*p[3])(char* )={list,move,exit};
     char buf,side;
     scanf("%d",&n);
     while(n--){
@@ -1074,6 +1078,7 @@ int main(){
                 }
                 case 'Q': {
                     flag = 0;
+                    p[exitfunction](&side);
                     break;
                 }
                 default:
@@ -1082,6 +1087,91 @@ int main(){
         }
         printf("\n");
     }
+    return 0;
+}
+#endif
+
+#ifdef UVa253
+/* Cube painting */
+enum{
+    tocheck,parallel,cross
+};
+int checkpair(int a1, int a2, int b1,int b2){
+    if(a1==b1&&a2==b2){
+        return parallel;
+    }
+    else if(a2==b1&&a1==b2){
+        return cross;
+    }
+    else return 0;
+}
+int circulatecheck(char buf[2][5]){
+    for(int i =0;i<4;i++){
+        buf[0][4]=buf[0][0];
+        for(int j=0;j<4;j++){
+            buf[0][j]=buf[0][j+1];
+        }
+        buf[0][4]=0;
+        if(strcmp(buf[0],buf[1])==0)printf("TRUE\n");
+    }
+    printf("False\n");
+    return 0;
+}
+int checkround(char cube[2][6],int n[2]){
+    char buf[2][5];
+    memset(buf,0,sizeof(buf));
+    for(int i=0;i<2;i++){
+        if(*(n+i)==1 ||*(n+i)==6){
+            buf[i][0]=cube[i][1];
+            buf[i][3]=cube[i][4];
+        }
+        else {
+            buf[i][0]=cube[i][0];
+            buf[i][3]=cube[i][5];
+        }
+        if(*(n+i)==1 ||*(n+i)==5){
+            buf[i][1]=cube[i][4];
+            buf[i][2]=cube[i][3];
+        }
+        else if(*(n+i)==2 ||*(n+i)==6){
+            buf[i][1]=cube[i][3];
+            buf[i][2]=cube[i][4];
+        }
+        else if(*(n+i)==3){
+            buf[i][1]=cube[i][5];
+            buf[i][2]=cube[i][2];
+        }
+        else{
+            buf[i][1]=cube[i][2];
+            buf[i][2]=cube[i][5];
+        }
+    }
+    circulatecheck(buf);
+    return 0;
+}
+int main(){
+    char cube[2][6];
+    int flag[3],buf,i,j,n[2];
+    scanf("%s",cube[0]);
+    flag[0]=flag[1]=flag[2]=tocheck;
+    for( i =0;i<3;i++) {
+        for ( j = 0; j < 3; j++) {
+            if (flag[j] == tocheck) {
+                buf = checkpair(cube[0][i], cube[0][5 - i], cube[1][j], cube[1][5 - j]);
+                if (buf){
+                    n[0]=i;
+                    if(buf==parallel)n[1]=j;
+                    else n[1]=5-j;
+                    flag[j] = buf;
+                    break;
+                }
+            }
+        }
+    }
+    if(flag[0]&&flag[1]&& flag[2]){
+        checkround(cube,n);
+    }
+    else printf("No\n");
     return 0;
 }
 #endif
