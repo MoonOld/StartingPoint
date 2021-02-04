@@ -1,4 +1,4 @@
-#define UVa201
+#define UVa220
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -935,3 +935,153 @@ int main(){
 }
 #endif
 
+
+
+#ifdef UVa220
+/* Othello */
+enum{
+    listfunction ,movefunction
+};
+char board[9][9];
+int readboard(){
+    char buf;
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++){
+            while((buf=getchar())=='\n');
+            board[i][j]=buf;
+        }
+    }
+    return 0;
+}
+int checklist(int r,int c,char side,int *nums){
+    int rbuf,cbuf;
+    for(int i=-1;i<2;i++){
+        for(int j = -1;j<2;j++){
+            if((r+i)>=0&&(r+i)<=7&&(c+j)>=0&&(c+j)<=7){
+                if(board[r+i][c+j]!='-' && board[r+i][c+j]!= side) {
+                    rbuf = 2*i; cbuf=2*j;
+                    while ((r + rbuf) >= 0 && (r + rbuf) <= 7 && (c + cbuf) >= 0 && (c + cbuf) <= 7) {
+                        if(board[r+rbuf][c+cbuf] == side)break;
+                        else if(board[r+rbuf][c+cbuf]== '-'){
+                            if(*nums)printf(" ");
+                            printf("(%d,%d)",r+rbuf+1,c+cbuf+1);
+                            (*nums)++;
+                            break;
+                        }
+                        rbuf +=i;
+                        cbuf +=j;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+int list(char * side ){
+    int nums=0;
+    for(int i =0;i<8;i++){
+        for(int j=0; j<8;j++){
+            if(board[i][j]== *side){
+                checklist(i,j,*side,&nums);
+            }
+        }
+    }
+    if(nums==0){
+        *side = *side =='B'?'W':'B';
+        printf("No Legal move.\n");
+    }
+    else printf("\n");
+    return 0;
+}
+
+int checkmove(int r,int c){
+    char side=board[r][c];
+    int flag,rbuf,cbuf;
+    for(int i=-1;i<2;i++){
+        for(int j = -1;j<2;j++){
+            if((r+i)>=0&&(r+i)<=7&&(c+j)>=0&&(c+j)<=7){
+                if(board[r+i][c+j]!='-' && board[r+i][c+j]!= side) {
+                    rbuf = 2*i; cbuf=2*j;flag=0;
+                    while ((r + rbuf) >= 0 && (r + rbuf) <= 7 && (c + cbuf) >= 0 && (c + cbuf) <= 7) {
+                        if(board[r+rbuf][c+cbuf] == side){
+                            flag=1;
+                            break;
+                        }
+                        else if(board[r+rbuf][c+cbuf] =='-'){
+                            break;
+                        }
+                        rbuf +=i;
+                        cbuf +=j;
+                    }
+                    if(flag){
+                        rbuf-=i;
+                        cbuf-=j;
+                        while(rbuf||cbuf){
+                            board[r+rbuf][c+cbuf]=side;
+                            rbuf-=i;
+                            cbuf-=j;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+int statistics(){
+    int n=0,m=0;
+    for(int i =0;i<8;i++){
+        for(int j =0;j<8;j++){
+            if(board[i][j]=='B')n++;
+            else if(board[i][j]=='W')m++;
+        }
+    }
+    printf("Black - %d White - %d\n",n,m);
+    return 0;
+}
+int move(char * side){
+    char n,m;
+    scanf("%c%c",&n,&m);
+    n -='0';
+    m -='0';
+    board[n-1][m-1]=*side;
+    checkmove(n-1,m-1);
+    statistics();
+    if(*side =='B')*side='W';
+    else *side ='B';
+    return 0;
+}
+int main(){
+    int flag,n,(*p[2])(char* )={list,move};
+    char buf,side;
+    scanf("%d",&n);
+    while(n--){
+        flag = 1;
+        readboard();
+        getchar();
+        side = getchar();  //getside
+        while(flag) {
+            getchar();
+            buf = getchar();
+            switch (buf) {
+                case 'L': {
+                    p[listfunction](&side);
+                    break;
+                }
+                case 'M': {
+                    p[movefunction](&side);
+                    break;
+                }
+                case 'Q': {
+                    flag = 0;
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        printf("\n");
+    }
+    return 0;
+}
+#endif
