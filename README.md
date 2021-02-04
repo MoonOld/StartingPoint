@@ -1,7 +1,7 @@
 # StartingPoint
-all the way learning the book "算法竞赛入门经典" 2nd 
+all the way learning the book "算法竞赛入门经典" 2nd
 
-
+==如果有任何人有注释或者沟通需求请发送邮件至我的gmail邮箱moonold.h@gmail.com== 
 
 ### 第一天
 
@@ -120,3 +120,4 @@ all the way learning the book "算法竞赛入门经典" 2nd
 
 * 昨日大量摸鱼
 * 请认真阅读题干==input==
+* 忘了解释 有的题是没有考虑多轮输入的，但考虑到这部分比较简单所以有时候并没有具体实现。
