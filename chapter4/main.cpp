@@ -1,4 +1,4 @@
-#define UVa1589
+#define UVa201
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -806,6 +806,131 @@ int main(){
     }
     if(judgeEmpty(black))printf("Yes\n");
     else printf("No\n");
+    return 0;
+}
+#endif
+
+#ifdef UVa201
+/* Squares */
+enum{
+    null,horizontal,vertical
+};
+typedef struct{
+    int type;
+    int row;
+    int column;
+}line;
+line all[81];
+int searchclose(line* p,int length,int type,int flag){
+    for(int i=1;i<length;i++){
+        if(type == horizontal){
+            if((p+i)->type==horizontal&&((p+i)->row != p->row || ((p+i)->column)!= p->column +i))return 0;
+        }
+        if(type == vertical){
+            if((p+i)->type==vertical&&((p+i)->column != p->column || ((p+i)->row)!= p->row +i))return 0;
+        }
+    }
+    if(flag)
+    {
+        if(type ==horizontal){
+            for(int i =0; (p+i)->type;i++){
+                if((p+i)->type==horizontal&& (p+i)->row== p->row+length&& (p+i)->column== (p->column))
+                return searchclose(p+i,length,horizontal,0);
+            }
+            return 0;
+        }
+        if(type ==vertical){
+            for(int i =0; (p+i)->type;i++){
+                if((p+i)->type==vertical&& (p+i)->row== p->row&& (p+i)->column== (p->column)+length)
+                    return searchclose(p+i,length,horizontal,0);
+            }
+            return 0;
+        }
+    }
+    return 1;
+}
+int exchange(line* a, line*b){
+    int buf;
+    buf = a->column;
+    a ->column = b->column;
+    b->column = buf;
+    buf = a->row;
+    a -> row = b->row;
+    b -> row = buf;
+    return 0;
+}
+int sort(){
+    for(int i = 0;all[i].type!=null;i++){
+        if(all[i].type==horizontal){
+            for(int j=i+1;all[j].type!=null;j++){
+                if(all[j].type==horizontal&& ( all[i].row>all[j].row ||       (all[i].row==all[j].row&& all[i].column>all[j].column))){
+                    exchange(all+i,all+j);
+                }
+            }
+        }
+        if(all[i].type==vertical){
+            for(int j=i+1;all[j].type!=null;j++){
+                if(all[j].type==vertical&& (all[i].column>all[j].column || (all[i].column==all[j].column&& all[i].row>all[j].column)) ){
+                    exchange(all+i,all+j);
+                }
+            }
+        }
+    }
+    return 0;
+}
+int searchsquares(int length){
+    int nums=0;
+    int flag;
+    for(int i=0;all[i].type!=null;i++){
+        if(all[i].type==horizontal){
+            flag = searchclose(all+i,length,horizontal,1);
+            if(flag){
+                for(int j =0; all[j].type!=null;j++){
+                    if(all[j].type == vertical && all[j].column==all[i].column&& all[j].row== all[i].row){
+                        flag = searchclose(all+j,length ,vertical,1);
+                        if(flag )nums++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return nums;
+}
+int main(){
+    int n,m,nums,flag;
+    char buf;
+    memset(all,0,sizeof(all));
+    scanf("%d %d",&n,&m);
+    for(int i =0;i<m;i++){
+        getchar();
+        buf = getchar();
+        switch (buf) {
+            case 'V':{
+                all[i].type = vertical;
+                scanf("%d %d",&all[i].column, &all[i].row);
+                break;
+            }
+            case 'H':{
+                all[i].type = horizontal;
+                scanf("%d %d",&all[i].row,&all[i].column);
+                break;
+            }
+            default:
+                break;
+        }
+    }//read
+    sort();
+    for(int i = 1;i<m/2;i++){
+        nums = searchsquares(i);
+        if(nums){
+            flag =1;
+            printf("%d square(s) of size %d\n",nums,i);
+        }
+    }
+    if(flag==0){
+        printf("No completed squares can be found\n");
+    }
     return 0;
 }
 #endif
