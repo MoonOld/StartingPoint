@@ -1,4 +1,4 @@
-#define UVa253
+#define UVa1590
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -1112,16 +1112,19 @@ int circulatecheck(char buf[2][5]){
             buf[0][j]=buf[0][j+1];
         }
         buf[0][4]=0;
-        if(strcmp(buf[0],buf[1])==0)printf("TRUE\n");
+        if(strcmp(buf[0],buf[1])==0){
+            printf("TRUE\n");
+            return 0;
+        }
     }
-    printf("False\n");
+    printf("FALSE\n");
     return 0;
 }
 int checkround(char cube[2][6],int n[2]){
     char buf[2][5];
     memset(buf,0,sizeof(buf));
     for(int i=0;i<2;i++){
-        if(*(n+i)==1 ||*(n+i)==6){
+        if(*(n+i)==0 ||*(n+i)==5){
             buf[i][0]=cube[i][1];
             buf[i][3]=cube[i][4];
         }
@@ -1129,21 +1132,21 @@ int checkround(char cube[2][6],int n[2]){
             buf[i][0]=cube[i][0];
             buf[i][3]=cube[i][5];
         }
-        if(*(n+i)==1 ||*(n+i)==5){
-            buf[i][1]=cube[i][4];
-            buf[i][2]=cube[i][3];
-        }
-        else if(*(n+i)==2 ||*(n+i)==6){
+        if(*(n+i)==0 ||*(n+i)==4){
             buf[i][1]=cube[i][3];
-            buf[i][2]=cube[i][4];
-        }
-        else if(*(n+i)==3){
-            buf[i][1]=cube[i][5];
             buf[i][2]=cube[i][2];
         }
-        else{
+        else if(*(n+i)==1 ||*(n+i)==5){
             buf[i][1]=cube[i][2];
-            buf[i][2]=cube[i][5];
+            buf[i][2]=cube[i][3];
+        }
+        else if(*(n+i)==2){
+            buf[i][1]=cube[i][4];
+            buf[i][2]=cube[i][1];
+        }
+        else{
+            buf[i][1]=cube[i][1];
+            buf[i][2]=cube[i][4];
         }
     }
     circulatecheck(buf);
@@ -1152,7 +1155,13 @@ int checkround(char cube[2][6],int n[2]){
 int main(){
     char cube[2][6];
     int flag[3],buf,i,j,n[2];
-    scanf("%s",cube[0]);
+    for(char *p=cube[0];p<cube[1]+6;){
+        buf =getchar();
+        if(buf!='\n'){
+            *p=buf;
+            p++;
+        }
+    }
     flag[0]=flag[1]=flag[2]=tocheck;
     for( i =0;i<3;i++) {
         for ( j = 0; j < 3; j++) {
@@ -1171,7 +1180,73 @@ int main(){
     if(flag[0]&&flag[1]&& flag[2]){
         checkround(cube,n);
     }
-    else printf("No\n");
+    else printf("FALSE\n");
+    return 0;
+}
+#endif
+
+
+#ifdef UVa1590
+/* IP Networks */
+int main(){
+    int m,i,flag=1,num;
+    unsigned *p;
+    scanf("%d",&m);
+    p = (unsigned *)malloc(sizeof(unsigned )*m*4);
+    if(p){
+        memset(p,0,sizeof(unsigned)*m*4);
+        for( i =0;i<m;i++){
+            scanf("%u.%u.%u.%u",p+4*i,p+4*i+1,p+4*i+2,p+4*i+3);
+        }
+        for(i=0;i<32&&flag;i++){
+            for(int j =1;j<m&&flag;j++){
+                if(  (   *(p+4*j+i/8)& (    1<<(7-i%8)) ) != (    *(p+i/8)  &  (1<<(7-i%8))  )   )
+                    flag =0;
+            }
+        }
+        i--;
+        for(int j=0;j<32;j+=8){
+            if(i-j>7)
+            {
+                printf("%d",*(p+j/8));
+            }
+            else if(i-j>0){
+                num=0;
+                for(int x =i-j;x;x--){
+                    num+= *(p+j/8)&(1<<(8-x));
+                }
+                printf("%d",num);
+            }
+            else {
+                printf("0");
+            }
+            if(j<24)
+                printf(".");
+            else printf("\n");
+        }
+
+        for(int j=0;j<32;j+=8){
+            if(i-j>7)
+            {
+                printf("%d",(1<<8)-1);
+            }
+            else if(i-j>0){
+                num=0;
+                for(int x =i-j;x;x--){
+
+                    num+= 1<<(8-x);
+                }
+                printf("%d",num);
+            }
+            else {
+                printf("0");
+            }
+            if(j<24)
+                printf(".");
+            else printf("\n");
+        }
+        free(p);
+    }
     return 0;
 }
 #endif
