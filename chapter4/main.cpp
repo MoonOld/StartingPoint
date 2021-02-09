@@ -1,4 +1,4 @@
-#define UVa1590
+#define UVa508
 #define UVa512_way1
 #include <iostream>
 #include "math.h"
@@ -1247,6 +1247,92 @@ int main(){
         }
         free(p);
     }
+    return 0;
+}
+#endif
+
+#ifdef UVa508
+/* Morse Mismatches */
+#define MAX 200
+typedef struct{
+    char code[15];
+    char character;
+}TABLE;
+enum{
+    SUCCESS
+};
+int read(TABLE* root){
+    char buf;
+    buf = getchar();
+    while(buf!= '*'){
+        if(buf!=' ' && buf!='\n' ){
+            root->character=buf;
+            scanf("%s",root->code);
+            root++;
+        }
+        buf =getchar();
+    }
+    return 0;
+}
+int getdict(TABLE *table ,char morsedict[15][30]){
+    char text[20],*p;
+    int flag=1;
+    do{
+        scanf("%s",text);
+        if(strcmp(text,"*")==0)flag=0;
+        else {
+            for(int i =0;i<15;i++){
+                if(text[i]==0)break;
+                else{
+                    for(int j=0;(table+j)->character;j++){
+                        if((table+j)->character==text[i]){
+                            p = *morsedict +strlen(*morsedict);
+                            strcpy(p,(table+j)->code);
+                        }
+                    }
+                }
+            }
+            morsedict++;
+        }
+    }while(flag);
+    return 0;
+}
+int check(char *word,char buf[30]){
+    int flag=0,i,length=strlen(word);
+    for(i=0;i<30;i++){
+        if( !buf[i] || !word[i])break;
+        else if(buf[i]!=word[i])break;
+    }
+    return length-i-1;
+}
+
+int main(){
+    int  num,length,tocheck;
+    TABLE table[30];
+    char morsedict[15][30],buf,bufstring[30];
+    memset(table,0,sizeof(table));
+    memset(morsedict,0,sizeof(morsedict));
+    read(table);
+    getdict(table,morsedict);
+    getchar();
+    buf=getchar();
+    while(buf!='*'){
+        scanf("%s",bufstring);
+        num=length=MAX;
+        for(int i =0;morsedict[i][0];i++){
+            tocheck=check(morsedict[i],bufstring);
+            if(tocheck==0){
+                num = i;
+                break;
+            }
+            else if(tocheck< length){
+                length=tocheck;
+                num=i;
+            }
+        }
+        buf=getchar();
+    }
+
     return 0;
 }
 #endif
